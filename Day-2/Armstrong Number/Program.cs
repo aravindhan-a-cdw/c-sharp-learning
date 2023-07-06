@@ -19,7 +19,9 @@ class ArmstrongNumber
 {
     static void Main(string[] args)
     {
-        int number = Convert.ToInt32(args[0]);
+        Console.WriteLine("Armstrong Number");
+        Console.Write("Enter a number: ");
+        int number = Convert.ToInt32(Console.ReadLine());
         Console.WriteLine("You have entered number: " + number);
 
         double sumOfPoweredDigits = 0;
