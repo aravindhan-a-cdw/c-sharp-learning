@@ -27,10 +27,10 @@ class PrimeNumber
         return factors;
     }
 
-    static bool isPrime(int number)
-    {
-        return getFactors(number) == 2;
-    }
+    static bool isPrime(int number) => getFactors(number) == 2;
+    // {
+    //     return getFactors(number) == 2;
+    // }
 
     static void Main(string[] args)
     {
