@@ -31,10 +31,10 @@ class SmallestProductOfDigits
         if (number > 9)
         {
             int result = getProduct(number);
-            if (result > 9) return minifiedProduct(result);
+            if (result > 9) return minifiedProduct(result);  // Recursive Case
             return result;
         }
-        return number;
+        return number;  // Base Case
     }
 
     static void Main(string[] args)
