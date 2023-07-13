@@ -5,7 +5,7 @@ using Image;
 
 namespace Image
 {
-    class Editor
+    public class Editor
     {
         public string publicField = "Public";
 
@@ -20,7 +20,7 @@ namespace Image
         protected internal string protectedInternalField = "Protected Internal";
     }
 
-    class ImageEditor : Editor
+    public class ImageEditor : Editor
     {
         public void subclassMethod()
         {
