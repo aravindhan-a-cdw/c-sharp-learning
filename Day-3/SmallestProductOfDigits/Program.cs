@@ -16,21 +16,16 @@ using System;
 class SmallestProductOfDigits
 {
 
-    static int getProduct(int number)
-    {
-        if (number > 9)
-        {
-            int result = number % 10 * getProduct(number / 10);  // Recursive Case
-            return result;
-        }
-        return number;  // Base Case
-    }
-
     static int minifiedProduct(int number)
     {
         if (number > 9)
         {
-            int result = getProduct(number);
+            int result = 1;
+            while (number != 0)
+            {
+                result = result * (number % 10);
+                number = number / 10;
+            }
             if (result > 9) return minifiedProduct(result);  // Recursive Case
             return result;
         }
