@@ -23,14 +23,10 @@ class PrimeNumber
                 factors++;
             }
         }
-        // Console.WriteLine("Number of factors for " + number + " are " + factors);
         return factors;
     }
 
     static bool isPrime(int number) => getFactors(number) == 2;
-    // {
-    //     return getFactors(number) == 2;
-    // }
 
     static void Main(string[] args)
     {
@@ -44,7 +40,6 @@ class PrimeNumber
         }
         for (int number = start; number <= end; number++)
         {
-            // isPrime(number) ? Console.Write(number + " ") : Console.Write("");
             if (isPrime(number))
             {
                 Console.Write(number + " ");
