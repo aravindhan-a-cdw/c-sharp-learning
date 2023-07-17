@@ -27,28 +27,31 @@ class StringDecompression
         while (index < compressedString.Length)
         {
             char currentChar = compressedString[index];
-            // Console.WriteLine($"CurrentChar: {currentChar}");
-            if (Char.IsNumber(currentChar))
+            if (currentChar > 47 && currentChar < 58)
             {
                 repeatitionCount = repeatitionCount * 10 + Convert.ToInt32(currentChar.ToString());
-                // Console.WriteLine($"Repitition Count: {repeatitionCount}");
                 index++;
                 if (index == compressedString.Length)
                 {
                     decompressedString.Append(getRepeatedString(repeatingString.ToString(), repeatitionCount));
-                    continue;
                 }
-                char upcomingChar = compressedString[index];
-                if (Char.IsLetter(upcomingChar))
+                else
                 {
-                    decompressedString.Append(getRepeatedString(repeatingString.ToString(), repeatitionCount));
-                    repeatitionCount = 0;
-                    repeatingString.Clear();
+                    char upcomingChar = compressedString[index];
+                    if (Char.IsLetter(upcomingChar))
+                    {
+                        decompressedString.Append(getRepeatedString(repeatingString.ToString(), repeatitionCount));
+                        repeatitionCount = 0;
+                        repeatingString.Clear();
+                    }
+
                 }
-                continue;
             }
-            repeatingString.Append(currentChar);
-            index++;
+            else
+            {
+                repeatingString.Append(currentChar);
+                index++;
+            }
         }
         Console.WriteLine(decompressedString);
     }
