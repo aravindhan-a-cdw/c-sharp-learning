@@ -272,7 +272,10 @@ class Application : BankAdminOperations, CustomerOperations
         ulong cardNumber;
         ConsoleDisplay.WriteColor("Enter the card number to block: ", ConsoleColor.DarkCyan);
         UInt64.TryParse(Console.ReadLine(), out cardNumber);
-        bank1.blockCard(cardNumber);
+        if (bank1.blockCard(cardNumber))
+        {
+            ConsoleDisplay.WriteColorLine($"You have successfully blocked the card with card number: {cardNumber}", ConsoleColor.Green);
+        }
     }
 
     public static void customerBlockCreditCard()

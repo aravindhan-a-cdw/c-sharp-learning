@@ -153,15 +153,16 @@ class Bank
 
     }
 
-    public void blockCard(ulong cardNumber)
+    public bool blockCard(ulong cardNumber)
     {
         int index = cards.FindIndex(card => card.cardNumber == cardNumber);
         if (index == -1)
         {
             ConsoleDisplay.WriteColorLine("No card found!", ConsoleColor.Red);
-            return;
+            return false;
         }
         cards[index].status = CardStatus.BLOCKED;
+        return true;
     }
 
     public void blockCardWithPin(ulong cardNumber, ushort pin)
