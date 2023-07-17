@@ -8,21 +8,22 @@ class CharEncryption
     {
         while (number / 10 != 0)
         {
-            number = number / 10;
+            number = (number / 10);
         }
         return number;
     }
 
     static string Encrypt(char letter)
     {
-        byte asciiCode = Convert.ToByte(letter);
-        byte asciiCodeEnd = (byte)(asciiCode % 10);
-        int asciiCodeStart = getFirstDigit(asciiCode);
-        char encryptedChar = Convert.ToChar(asciiCode + asciiCodeEnd);
-        return encryptedChar.ToString() +
-        Convert.ToString(asciiCodeStart) +
-        Convert.ToString(asciiCodeEnd) +
-        Convert.ToChar(asciiCode - asciiCodeStart).ToString();
+        int ascii = letter;
+        Console.WriteLine(ascii);
+        int asciiLetter = letter;
+
+        int asciiCodeEnd = asciiLetter % 10;
+        int asciiCodeStart = getFirstDigit(asciiLetter);
+        char encryptedChar = (char)(asciiLetter + asciiCodeEnd);
+        char differenceLetter = (char)(asciiLetter - asciiCodeStart);
+        return $"{encryptedChar}{asciiCodeStart}{asciiCodeEnd}{differenceLetter}";
     }
 
     static void Main()
