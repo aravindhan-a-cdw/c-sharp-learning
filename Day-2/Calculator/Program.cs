@@ -65,6 +65,9 @@ class Calculator
                     Console.WriteLine("Output is : " + value);
                 }
                 break;
+            default:
+                Console.WriteLine("This operation is not available in this calculator");
+                break;
         }
     }
 }
