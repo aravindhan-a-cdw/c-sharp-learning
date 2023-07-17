@@ -24,7 +24,7 @@ class ArmstrongNumber
         int number = Convert.ToInt32(Console.ReadLine());
         Console.WriteLine("You have entered number: " + number);
 
-        double sumOfPoweredDigits = 0;
+        int sumOfPoweredDigits = 0;
         int numOfDigits = 0;
         int numberCopy = number;
 
@@ -37,21 +37,20 @@ class ArmstrongNumber
         while (numberCopy != 0)
         {
             int digit = numberCopy % 10;
-            sumOfPoweredDigits += Math.Pow(digit, numOfDigits);
-            numberCopy = numberCopy / 10;
+            sumOfPoweredDigits += (int)Math.Pow(digit, numOfDigits); // As i am passing two int's the power will also be an int
+            numberCopy = numberCopy / 10;  // This division is to remove the last digit and hence storing in int will exclude the decimal values
         }
 
         Console.WriteLine("The sum is " + sumOfPoweredDigits + " and the number of digits is " + numOfDigits);
 
         bool isArmstrongNumber = sumOfPoweredDigits == number;
-        switch (isArmstrongNumber)
+        if (isArmstrongNumber)
         {
-            case true:
-                Console.WriteLine("It is an Armstrong number");
-                break;
-            case false:
-                Console.WriteLine("It is not an Armstrong number");
-                break;
+            Console.WriteLine("It is an Armstrong number");
+        }
+        else
+        {
+            Console.WriteLine("It is not an Armstrong number");
         }
     }
 }
