@@ -7,7 +7,7 @@ class Account
 
     static uint accountCount = 0;
 
-    List<Card> cards = new List<Card>();
+    public List<Card> cards = new List<Card>();
 
     public Account(Customer accountHolder)
     {

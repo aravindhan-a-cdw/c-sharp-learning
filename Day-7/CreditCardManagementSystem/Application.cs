@@ -1,7 +1,7 @@
 
 using System;
 using System.Collections.Generic;
-class Application
+class Application : BankAdminOperations, CustomerOperations
 {
 
     static Bank bank1 = new Bank();
@@ -15,7 +15,6 @@ class Application
         Console.WriteLine();
         ConsoleDisplay.WriteColor("Enter your option: ", ConsoleColor.DarkMagenta);
     }
-
     static void printBankAdminOptions()
     {
         Console.Clear();
@@ -40,45 +39,16 @@ class Application
         Console.WriteLine("4. Logout");
         ConsoleDisplay.WriteColor("Enter your option: ", ConsoleColor.DarkMagenta);
     }
-
     static void invalidOptionError()
     {
 
         ConsoleDisplay.WriteColorLine("\nYou have selected an invalid option. Try Again!\n", ConsoleColor.Red);
     }
-
     static void waitForConfirmation()
     {
         Console.Write("\nPress ENTER to go back");
         Console.ReadKey();
     }
-
-    static void addNewCustomer()
-    {
-        ConsoleDisplay.WriteColorLine("Help me by answering the following questions!", ConsoleColor.DarkCyan);
-        Console.Write("Enter the name of the customer: ");
-        string name = Console.ReadLine();
-        Console.Write("Enter the customer aadhar number: ");
-        uint aadharNumber;
-        UInt32.TryParse(Console.ReadLine(), out aadharNumber);
-        Customer customer = bank1.addNewCustomer(name, aadharNumber);
-        ConsoleDisplay.WriteColorLine($"{customer} has been created successfully!", ConsoleColor.Green);
-    }
-
-    static void applyCreditCard()
-    {
-        Console.Write("Enter you aadhar number: ");
-        ulong aadharNumber;
-        UInt64.TryParse(Console.ReadLine(), out aadharNumber);
-        bool created = bank1.applyCreditCard(aadharNumber);
-        if (!created)
-        {
-            ConsoleDisplay.WriteColorLine("You do not have any account in our bank!", ConsoleColor.Red);
-            return;
-        }
-        ConsoleDisplay.WriteColorLine("You have successfully requested for Credit Card", ConsoleColor.Green);
-    }
-
     static void bankAdminLoop()
     {
         while (true)
@@ -93,47 +63,32 @@ class Application
 
             if (selectedOption == 7) break;
 
+            Console.Clear();
             switch (selectedOption)
             {
                 case 1:
-                    Console.Clear();
-                    bank1.viewAllAccountInfo();
-                    waitForConfirmation();
+                    viewAllCustomerData();
                     break;
                 case 2:
-                    Console.Clear();
-                    bank1.viewAllIssuedCardsInfo();
-                    waitForConfirmation();
+                    viewAllIssuedCards();
                     break;
                 case 3:
-                    Console.Clear();
                     addNewCustomer();
-                    waitForConfirmation();
                     break;
                 case 4:
-                    Console.Clear();
-                    bank1.issueCreditCard();
-                    waitForConfirmation();
-                    Console.Clear();
+                    issueNewCreditCard();
                     break;
                 case 5:
-                    Console.Clear();
-                    bank1.viewAllBlockedCardsInfo();
-                    waitForConfirmation();
+                    viewBlockedCards();
                     break;
                 case 6:
-                    Console.Clear();
-                    ulong cardNumber;
-                    ConsoleDisplay.WriteColor("Enter the card number to block: ", ConsoleColor.DarkCyan);
-                    UInt64.TryParse(Console.ReadLine(), out cardNumber);
-                    bank1.blockCard(cardNumber);
-                    waitForConfirmation();
+                    adminBlockCreditCard();
                     break;
 
             }
+            waitForConfirmation();
         }
     }
-
     static void customerLoop()
     {
         while (true)
@@ -148,23 +103,22 @@ class Application
 
             if (selectedOption == 4) break;
 
+            Console.Clear();
             switch (selectedOption)
             {
                 case 1:
-                    Console.Clear();
                     applyCreditCard();
-                    waitForConfirmation();
                     break;
                 case 2:
-                    while (true)
-                    {
-                        break;
-                    }
+                    viewBalance();
+                    break;
+                case 3:
+                    customerBlockCreditCard();
                     break;
             }
+            waitForConfirmation();
         }
     }
-
     static void programLoop()
     {
         while (true)
@@ -204,5 +158,159 @@ class Application
         programLoop();
         Console.Clear();
         ConsoleDisplay.WriteColorLine("Thanks you for availing our service! Visit us Again!", ConsoleColor.Green);
+    }
+
+    public static void viewAllCustomerData()
+    {
+        bank1.viewAllAccountInfo();
+    }
+
+    public static void viewAllIssuedCards()
+    {
+        bank1.viewAllIssuedCardsInfo();
+    }
+
+    public static void addNewCustomer()
+    {
+        ConsoleDisplay.WriteColorLine("Help me by answering the following questions!", ConsoleColor.DarkCyan);
+        Console.Write("Enter the name of the customer: ");
+        string name = Console.ReadLine();
+        Console.Write("Enter the customer aadhar number: ");
+        uint aadharNumber;
+        UInt32.TryParse(Console.ReadLine(), out aadharNumber);
+        Customer customer = bank1.addNewCustomer(name, aadharNumber);
+        ConsoleDisplay.WriteColorLine($"{customer} has been created successfully!", ConsoleColor.Green);
+    }
+
+    public static void issueNewCreditCard()
+    {
+        bank1.issueCreditCard();
+    }
+
+    public static void viewBlockedCards()
+    {
+        bank1.viewAllBlockedCardsInfo();
+    }
+
+    public static void applyCreditCard()
+    {
+        Console.Write("Enter you aadhar number: ");
+        ulong aadharNumber;
+        UInt64.TryParse(Console.ReadLine(), out aadharNumber);
+        ConsoleDisplay.WriteColorLine("Select a card you wish to apply:", ConsoleColor.DarkCyan);
+        Console.WriteLine("1. Silver Card\n2. Gold Card\n3. Platinum Card\nEnter an option: ");
+        ushort cardType;
+        UInt16.TryParse(Console.ReadLine(), out cardType);
+        if (cardType < 1 || cardType > 3)
+        {
+            invalidOptionError();
+            return;
+        }
+        bool created = bank1.applyCreditCard(aadharNumber, cardType);
+        if (!created)
+        {
+            ConsoleDisplay.WriteColorLine("You cannot request credit card!", ConsoleColor.Red);
+            return;
+        }
+        ConsoleDisplay.WriteColorLine("You have successfully requested for Credit Card", ConsoleColor.Green);
+    }
+
+    static List<Card> GetAllActiveCards()
+    {
+        ConsoleDisplay.WriteColorLine("Enter you aadhar number: ", ConsoleColor.DarkCyan);
+        ulong aadharNumber;
+        UInt64.TryParse(Console.ReadLine(), out aadharNumber);
+        Account userAccount = bank1.GetAccount(aadharNumber);
+        if (userAccount == null)
+        {
+            return null;
+        }
+        List<Card> activeCards = userAccount.cards.FindAll(card => card.status == CardStatus.ACTIVE);
+        return activeCards;
+    }
+
+    public static void viewBalance()
+    {
+        List<Card> activeCards = GetAllActiveCards();
+        if (activeCards == null || activeCards.Count == 0)
+        {
+            ConsoleDisplay.WriteColorLine("You donot have any card linked to your account!", ConsoleColor.Red);
+            return;
+        }
+        ConsoleDisplay.WriteColorLine("Select a card to view balance: ", ConsoleColor.Cyan);
+        Card card;
+        for (int index = 0; index < activeCards.Count; ++index)
+        {
+            card = activeCards[index];
+            Console.WriteLine($"{index + 1}. {card.cardNumber}");
+        }
+
+        int selectedIndex;
+        Int32.TryParse(Console.ReadLine(), out selectedIndex);
+
+        if (selectedIndex < 1 || selectedIndex > activeCards.Count)
+        {
+            invalidOptionError();
+            return;
+        }
+        card = activeCards[selectedIndex - 1];
+        ConsoleDisplay.WriteColorLine("Enter you card pin: ", ConsoleColor.Cyan);
+        ushort cardPin;
+
+        UInt16.TryParse(Console.ReadLine(), out cardPin);
+
+        if (card.PinNumber != cardPin)
+        {
+            ConsoleDisplay.WriteColorLine("You have entered a wrong pin!", ConsoleColor.Red);
+            return;
+        }
+        Console.WriteLine($"You have {card.spendingLimit - card.amountSpent}");
+    }
+
+    public static void adminBlockCreditCard()
+    {
+        ulong cardNumber;
+        ConsoleDisplay.WriteColor("Enter the card number to block: ", ConsoleColor.DarkCyan);
+        UInt64.TryParse(Console.ReadLine(), out cardNumber);
+        bank1.blockCard(cardNumber);
+    }
+
+    public static void customerBlockCreditCard()
+    {
+        List<Card> activeCards = GetAllActiveCards();
+        if (activeCards == null || activeCards.Count == 0)
+        {
+            ConsoleDisplay.WriteColorLine("You donot have any card linked to your account!", ConsoleColor.Red);
+            return;
+        }
+        ConsoleDisplay.WriteColorLine("Select a card to block: ", ConsoleColor.Cyan);
+        Card card;
+        for (int index = 0; index < activeCards.Count; ++index)
+        {
+            card = activeCards[index];
+            Console.WriteLine($"{index + 1}. {card.cardNumber}");
+        }
+
+        int selectedIndex;
+        Int32.TryParse(Console.ReadLine(), out selectedIndex);
+
+        if (selectedIndex < 1 || selectedIndex > activeCards.Count)
+        {
+            invalidOptionError();
+            return;
+        }
+        card = activeCards[selectedIndex - 1];
+        ConsoleDisplay.WriteColorLine("Enter you card pin: ", ConsoleColor.Cyan);
+        ushort cardPin;
+
+        UInt16.TryParse(Console.ReadLine(), out cardPin);
+
+        if (card.PinNumber != cardPin)
+        {
+            ConsoleDisplay.WriteColorLine("You have entered a wrong pin!", ConsoleColor.Red);
+            return;
+        }
+        card.status = CardStatus.BLOCKED;
+        Console.WriteLine($"You have blocked your card with card number {card.cardNumber}");
     }
 }
