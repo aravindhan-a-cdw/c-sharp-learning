@@ -23,12 +23,12 @@ class Pattern
         Console.WriteLine("Priting Pattern for input: " + args[0]);
         int inputNumber = Convert.ToInt32(args[0]);
 
-        for (int line = 1; line <= inputNumber; line++)
+        for (int line = 0; line < inputNumber; line++)
         {
-            for (int space = inputNumber - line; space > 0; space--)
+            for (int space = inputNumber - line - 1; space > 0; space--)
                 Console.Write(" ");
 
-            for (int star = 2 * line - 1; star > 0; star--)
+            for (int star = 2 * line + 1; star > 0; star--)
                 Console.Write("*");
 
             Console.WriteLine("");
