@@ -36,7 +36,9 @@ class Application : BankAdminOperations, CustomerOperations
         Console.WriteLine("1. Apply for new Credit Card");
         Console.WriteLine("2. View Balance");
         Console.WriteLine("3. Close/Block Credit Card");
-        Console.WriteLine("4. Logout");
+        Console.WriteLine("4. Pay for a purchase");
+        Console.WriteLine("5. Deposit Money");
+        Console.WriteLine("6. Logout");
         ConsoleDisplay.WriteColor("Enter your option: ", ConsoleColor.DarkMagenta);
     }
     static void invalidOptionError()
@@ -96,12 +98,12 @@ class Application : BankAdminOperations, CustomerOperations
             int selectedOption;
             printCustomerOptions();
             Int32.TryParse(Console.ReadLine(), out selectedOption);
-            if (selectedOption < 1 || selectedOption > 4)
+            if (selectedOption < 1 || selectedOption > 6)
             {
                 invalidOptionError();
             }
 
-            if (selectedOption == 4) break;
+            if (selectedOption == 6) break;
 
             Console.Clear();
             switch (selectedOption)
@@ -114,6 +116,12 @@ class Application : BankAdminOperations, CustomerOperations
                     break;
                 case 3:
                     customerBlockCreditCard();
+                    break;
+                case 4:
+                    payForPurchase();
+                    break;
+                case 5:
+                    depositMoney();
                     break;
             }
             waitForConfirmation();
@@ -278,6 +286,21 @@ class Application : BankAdminOperations, CustomerOperations
         }
     }
 
+    public static bool verifyCardPin(Card card)
+    {
+        ConsoleDisplay.WriteColorLine("Enter you card pin: ", ConsoleColor.Cyan);
+        ushort cardPin;
+
+        UInt16.TryParse(Console.ReadLine(), out cardPin);
+
+        if (card.PinNumber != cardPin)
+        {
+            ConsoleDisplay.WriteColorLine("You have entered a wrong pin!", ConsoleColor.Red);
+            return false;
+        }
+        return true;
+    }
+
     public static void customerBlockCreditCard()
     {
         List<Card> activeCards = GetAllActiveCards();
@@ -303,17 +326,92 @@ class Application : BankAdminOperations, CustomerOperations
             return;
         }
         card = activeCards[selectedIndex - 1];
-        ConsoleDisplay.WriteColorLine("Enter you card pin: ", ConsoleColor.Cyan);
-        ushort cardPin;
 
-        UInt16.TryParse(Console.ReadLine(), out cardPin);
-
-        if (card.PinNumber != cardPin)
+        if (verifyCardPin(card))
         {
-            ConsoleDisplay.WriteColorLine("You have entered a wrong pin!", ConsoleColor.Red);
+            card.status = CardStatus.BLOCKED;
+            Console.WriteLine($"You have blocked your card with card number {card.cardNumber}");
+        }
+    }
+
+    public static void payForPurchase()
+    {
+        List<Card> activeCards = GetAllActiveCards();
+        if (activeCards == null || activeCards.Count == 0)
+        {
+            ConsoleDisplay.WriteColorLine("You donot have any card linked to your account!", ConsoleColor.Red);
             return;
         }
-        card.status = CardStatus.BLOCKED;
-        Console.WriteLine($"You have blocked your card with card number {card.cardNumber}");
+        ConsoleDisplay.WriteColorLine("Select a card to complete purchase: ", ConsoleColor.Cyan);
+        Card card;
+        for (int index = 0; index < activeCards.Count; ++index)
+        {
+            card = activeCards[index];
+            Console.WriteLine($"{index + 1}. {card.cardNumber}");
+        }
+
+        int selectedIndex;
+        Int32.TryParse(Console.ReadLine(), out selectedIndex);
+
+        if (selectedIndex < 1 || selectedIndex > activeCards.Count)
+        {
+            invalidOptionError();
+            return;
+        }
+        card = activeCards[selectedIndex - 1];
+
+        if (verifyCardPin(card))
+        {
+            Console.WriteLine("Enter amount to pay:");
+            uint payAmount;
+            UInt32.TryParse(Console.ReadLine(), out payAmount);
+
+            if (card.getBalance() < payAmount)
+            {
+                ConsoleDisplay.WriteColorLine("You donot have balance to spend for this purchase!", ConsoleColor.Red);
+                return;
+            }
+            ConsoleDisplay.WriteColor($"Are you sure to spend {payAmount} on this purchase? (Y/N) ", ConsoleColor.Cyan);
+            if (Console.ReadLine() == "N") return;
+            card.amountSpent += payAmount;
+            ConsoleDisplay.WriteColorLine("The amount has been debited from your account successfully!", ConsoleColor.Green);
+        }
+    }
+
+    public static void depositMoney()
+    {
+        List<Card> activeCards = GetAllActiveCards();
+        if (activeCards == null || activeCards.Count == 0)
+        {
+            ConsoleDisplay.WriteColorLine("You donot have any card linked to your account!", ConsoleColor.Red);
+            return;
+        }
+        ConsoleDisplay.WriteColorLine("Select a card to complete purchase: ", ConsoleColor.Cyan);
+        Card card;
+        for (int index = 0; index < activeCards.Count; ++index)
+        {
+            card = activeCards[index];
+            Console.WriteLine($"{index + 1}. {card.cardNumber}");
+        }
+
+        int selectedIndex;
+        Int32.TryParse(Console.ReadLine(), out selectedIndex);
+
+        if (selectedIndex < 1 || selectedIndex > activeCards.Count)
+        {
+            invalidOptionError();
+            return;
+        }
+        card = activeCards[selectedIndex - 1];
+
+        if (verifyCardPin(card))
+        {
+            Console.WriteLine("Enter amount to deposit:");
+            uint payAmount;
+            UInt32.TryParse(Console.ReadLine(), out payAmount);
+
+            card.amountSpent -= payAmount;
+            ConsoleDisplay.WriteColorLine("The amount has been credited to your account successfully!", ConsoleColor.Green);
+        }
     }
 }

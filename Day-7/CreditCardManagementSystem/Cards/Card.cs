@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 enum CardStatus
 {
@@ -32,6 +33,8 @@ abstract class Card
 
     protected abstract ulong cardSequence { get; }
 
+    protected List<Purchase> purchases;
+
     public Card()
     {
         ++cardCount;
@@ -46,7 +49,7 @@ abstract class Card
         return cardSequence + cardCount;
     }
 
-    uint getBalance()
+    public uint getBalance()
     {
         return spendingLimit - amountSpent;
     }

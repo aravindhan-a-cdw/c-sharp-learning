@@ -9,7 +9,7 @@ class ConsoleDisplay
         for (int index = 0; index < line.Length; ++index)
         {
             Console.Write(line[index]);
-            System.Threading.Thread.Sleep(10);
+            System.Threading.Thread.Sleep(100);
         }
         Console.WriteLine();
     }
