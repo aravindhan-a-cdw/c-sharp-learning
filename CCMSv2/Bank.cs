@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting;
 
 enum Info
 {
@@ -58,7 +59,7 @@ abstract class Bank
         return account;
     }
 
-    public bool applyCreditCard(ulong aadharNumber, ushort cardType)
+    public bool applyCreditCard(ulong aadharNumber, CardType cardType)
     {
         int accountIndex = accounts.FindIndex(account => account.customer.getAadharNumber() == aadharNumber);
         if (accountIndex == -1)
@@ -72,7 +73,17 @@ abstract class Bank
             Console.WriteLine("You have reached maximum number of cards");
             return false;
         }
-        Card newCard = (Card)Activator.CreateInstance(null, ((CardType)cardType).ToString()).Unwrap();
+        ObjectHandle? newCardHanlde = Activator.CreateInstance(null, (cardType).ToString()); // TODO: The CreateInstance 1st param must be nullable instead it is not
+        if (newCardHanlde == null)
+        {
+            return false;
+        }
+        Object? createdCard = newCardHanlde.Unwrap();
+        if (createdCard == null)
+        {
+            return false;
+        }
+        Card newCard = (Card)createdCard;
         cards.Add(newCard);
         account.addCard(newCard);
         account.customer.cardCount++;

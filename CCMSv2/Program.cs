@@ -301,7 +301,7 @@ class Application : ICustomerOperations
             ConsoleDisplay.InvalidOptionError();
             return;
         }
-        bool created = bank.applyCreditCard(customer.getAadharNumber(), cardType);
+        bool created = bank.applyCreditCard(customer.getAadharNumber(), (CardType)cardType);
         if (!created)
         {
             ConsoleDisplay.WriteColorLine("You cannot request credit card!", ConsoleColor.Red);
