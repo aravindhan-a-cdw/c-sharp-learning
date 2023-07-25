@@ -1,10 +1,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+
 class Application : BankAdminOperations, CustomerOperations
 {
 
     static Bank bank1 = new Bank();
+    Dictionary<int, int> store;
+
 
     static void printUserSelectionOptions()
     {
@@ -63,7 +67,10 @@ class Application : BankAdminOperations, CustomerOperations
                 invalidOptionError();
             }
 
-            if (selectedOption == 7) break;
+            if (selectedOption == 7)
+            {
+                break;
+            }
 
             Console.Clear();
             switch (selectedOption)
@@ -362,7 +369,9 @@ class Application : BankAdminOperations, CustomerOperations
 
         if (verifyCardPin(card))
         {
-            Console.WriteLine("Enter amount to pay:");
+            Console.Write("Enter purchase item name: ");
+            string itemName = Console.ReadLine();
+            Console.Write("Enter amount to pay:");
             uint payAmount;
             UInt32.TryParse(Console.ReadLine(), out payAmount);
 
@@ -373,8 +382,16 @@ class Application : BankAdminOperations, CustomerOperations
             }
             ConsoleDisplay.WriteColor($"Are you sure to spend {payAmount} on this purchase? (Y/N) ", ConsoleColor.Cyan);
             if (Console.ReadLine() == "N") return;
-            card.amountSpent += payAmount;
-            ConsoleDisplay.WriteColorLine("The amount has been debited from your account successfully!", ConsoleColor.Green);
+            try
+            {
+                card.debit(itemName, payAmount);
+                ConsoleDisplay.WriteColorLine("The amount has been debited from your account successfully!", ConsoleColor.Green);
+            }
+            catch (Exception excp)
+            {
+                Console.WriteLine(excp);
+                ConsoleDisplay.WriteColorLine("You donot have sufficient balance in your account!", ConsoleColor.Red);
+            }
         }
     }
 

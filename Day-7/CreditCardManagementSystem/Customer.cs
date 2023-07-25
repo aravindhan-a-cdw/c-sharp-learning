@@ -20,8 +20,12 @@ class Customer
     {
         name = customerName;
         aadharNumber = aadhar;
-        if (customers.Contains(aadhar))
+        if (!customers.Contains(aadhar))
+        {
             customers.Add(aadhar, this);
+            return this;
+        }
+        else return customers[aadhar];
     }
 
     public static Customer getCustomer(string customerName, uint aadharNumber)

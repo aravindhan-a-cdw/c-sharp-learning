@@ -54,11 +54,15 @@ abstract class Card
         return spendingLimit - amountSpent;
     }
 
-    uint debit(uint amount)
+    public uint debit(string name, uint amount)
     {
         if (amount < getBalance())
+        {
+            purchases.Add(new Purchase(name, amount));
             amountSpent += amount;
-        return amount;
+            return amount;
+        }
+        throw new Exception("Low balance exception");
     }
 
 
