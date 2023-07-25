@@ -3,10 +3,13 @@ using System.Collections.Generic;
 
 class Application : ICustomerOperations
 {
-    static List<Bank> banks = new();
+    static List<Bank> banks = new(); // TODO: Could have used Dictionary instead of list
 
-    static List<Customer> customers = new();
+    static List<Customer> customers = new(); // TODO: Use Dictionary as aadhar number is unique and can prevent duplicates
 
+    /// <summary>
+    /// Method <c>Initialize</c> is used to initalize the application by adding few banks and customers.
+    /// </summary>
     static void Initialize()
     {
         banks.Add(new KVBBank());
@@ -17,6 +20,11 @@ class Application : ICustomerOperations
         banks[2].addNewCustomer("Sowdesh", 09876);
     }
 
+    /// <summary>
+    /// Method <c>OptionSelection</c> is a generic method to get input option from user.
+    /// Param <param>max</param> is used to specify the max value which user is allowed to enter.
+    /// Param <param>min</param> is an optional parameter to specify the min value which user is allowed to enter. The default is 1.
+    /// </summary>
     static int OptionSelection(int max, int min = 1)
     {
         while (true)
@@ -39,6 +47,9 @@ class Application : ICustomerOperations
         }
     }
 
+    /// <summary>
+    /// Method <c>SelectBank</c> is used to list all available banks and wait for input from user for selecting a bank
+    /// </summary>
     static int SelectBank()
     {
         ConsoleDisplay.WriteColorLine("Select a bank: ", ConsoleColor.Cyan);
@@ -50,6 +61,9 @@ class Application : ICustomerOperations
         return OptionSelection(max: banks.Count) - 1;
     }
 
+    /// <summary>
+    /// Method <c>SelectUserType</c> is list the types of role in the application and get input from user for the corresponding type.
+    /// </summary>
     static int SelectUserType()
     {
         ConsoleDisplay.WriteColorLine("Select your role: ", ConsoleColor.DarkCyan);
@@ -59,6 +73,9 @@ class Application : ICustomerOperations
         return OptionSelection(max: 2);
     }
 
+    /// <summary>
+    /// Method <c>PrintBankAdminOptions</c> is used to list all the options available for a BankAdmin
+    /// </summary>
     static void PrintBankAdminOptions()
     {
         Console.Clear();
@@ -74,6 +91,9 @@ class Application : ICustomerOperations
         // ConsoleDisplay.WriteColor("Enter your option: ", ConsoleColor.DarkMagenta);
     }
 
+    /// <summary>
+    /// Method <c>PrintCustomerOptions</c> is used to list all the options available for a Customer
+    /// </summary>
     static void PrintCustomerOptions()
     {
         Console.Clear();
@@ -87,6 +107,9 @@ class Application : ICustomerOperations
         // ConsoleDisplay.WriteColor("Enter your option: ", ConsoleColor.DarkMagenta);
     }
 
+    /// <summary>
+    /// Method <c>BankAdminLoop</c> is used to show and execute all the BankAdmin options.
+    /// </summary>
     static void BankAdminLoop()
     {
         int bankSelection = SelectBank();
@@ -113,7 +136,7 @@ class Application : ICustomerOperations
                     bank.viewAllIssuedCardsInfo();
                     break;
                 case 3:
-                    addNewCustomer(bank);
+                    AddNewCustomer(bank);
                     break;
                 case 4:
                     bank.issueCreditCard();
@@ -130,7 +153,11 @@ class Application : ICustomerOperations
         }
     }
 
-    private static void addNewCustomer(Bank bank)
+    /// <summary>
+    /// Method <c>AddNewCustomer</c> is used to get input from user about new customer and add the customer account to the bank
+    /// Param <param>bank</param> is the bank object to which new customer is needed to be added.
+    /// </summary>
+    private static void AddNewCustomer(Bank bank)
     {
         ConsoleDisplay.WriteColor("Enter the customer name: ", ConsoleColor.Cyan);
         string? name = Console.ReadLine();
@@ -146,6 +173,9 @@ class Application : ICustomerOperations
         ConsoleDisplay.WriteColorLine("New account has been created successfully!", ConsoleColor.Green);
     }
 
+    /// <summary>
+    /// Method <c>CustomerLoop</c> is used to show and execute all the Customer options.
+    /// </summary>
     static void CustomerLoop()
     {
         Customer? customer = GetCustomer();
@@ -177,11 +207,6 @@ class Application : ICustomerOperations
             Console.Clear();
             PrintCustomerOptions();
             int selectedOption = OptionSelection(max: 6);
-            // Int32.TryParse(Console.ReadLine(), out selectedOption);
-            // if (selectedOption < 1 || selectedOption > 6)
-            // {
-            //     ConsoleDisplay.InvalidOptionError();
-            // }
 
             if (selectedOption == 6) break;
 
@@ -208,6 +233,9 @@ class Application : ICustomerOperations
         }
     }
 
+    /// <summary>
+    /// Method <c>GetCustomer</c> is used to get aadhar number input from user and returns Customer object if not present returns null.
+    /// </summary>
     static Customer? GetCustomer()
     {
         uint aadharNumber;
@@ -221,6 +249,9 @@ class Application : ICustomerOperations
         return customer;
     }
 
+    /// <summary>
+    /// Method <c>ProgramLoop</c> is the infinite loop method which will decide between BankAdmin and Customer.
+    /// </summary>
     static void ProgramLoop()
     {
         while (true)
@@ -243,6 +274,9 @@ class Application : ICustomerOperations
         }
     }
 
+    /// <summary>
+    /// Method <c>Main</c> is the entry point of the application
+    /// </summary>
     static void Main()
     {
         Console.Clear();
@@ -253,6 +287,9 @@ class Application : ICustomerOperations
         ConsoleDisplay.WriteColorLine("Thanks you for availing our service! Visit us Again!", ConsoleColor.Green);
     }
 
+    /// <summary>
+    /// Method <c>ApplyCreditCard</c> is used to apply credit card by the customer
+    /// </summary>
     public static void ApplyCreditCard(Customer customer, Bank bank)
     {
         ConsoleDisplay.WriteColorLine("Select a card you wish to apply:", ConsoleColor.DarkCyan);
@@ -273,6 +310,9 @@ class Application : ICustomerOperations
         ConsoleDisplay.WriteColorLine("You have successfully requested for Credit Card", ConsoleColor.Green);
     }
 
+    /// <summary>
+    /// Method <c>SelectActiveCard</c> is used display all active cards in account and let user select a card.
+    /// </summary>
     public static Card? SelectActiveCard(Account account)
     {
         List<Card> activeCards = account.cards.FindAll(card => card.status == CardStatus.ACTIVE);
@@ -295,6 +335,9 @@ class Application : ICustomerOperations
         return card;
     }
 
+    /// <summary>
+    /// Method <c>VeriyCard</c> is used to get Pin input from user and verify the pin is correct.
+    /// </summary>
     public static bool VerifiedCard(Card card)
     {
         ConsoleDisplay.WriteColorLine("Enter you card pin: ", ConsoleColor.Cyan);
@@ -310,6 +353,9 @@ class Application : ICustomerOperations
         return true;
     }
 
+    /// <summary>
+    /// Method <c>ViewBalance</c> is used by the customer to view balance in the card.
+    /// </summary>
     public static void ViewBalance(Customer customer, Bank bank)
     {
         Account? userAccount = bank.GetAccount(customer.getAadharNumber());
@@ -329,6 +375,9 @@ class Application : ICustomerOperations
 
     }
 
+    /// <summary>
+    /// Method <c>CustomerBlockCreditCard</c> is used by Customer to block a active credit card.
+    /// </summary>
     public static void CustomerBlockCreditCard(Customer customer, Bank bank)
     {
         Account? userAccount = bank.GetAccount(customer.getAadharNumber());
@@ -348,6 +397,9 @@ class Application : ICustomerOperations
         }
     }
 
+    /// <summary>
+    /// Method <c>PayForPurchase</c> is used by customer to pay or debit amount from credit card after pin verification
+    /// </summary>
     public static void PayForPurchase(Customer customer, Bank bank)
     {
         Account? userAccount = bank.GetAccount(customer.getAadharNumber());
@@ -393,6 +445,9 @@ class Application : ICustomerOperations
         }
     }
 
+    /// <summary>
+    /// Method <c>GetCustomer</c> is used to get aadhar number input from user and returns Customer object if not present returns null.
+    /// </summary>
     public static void DepositMoney(Customer customer, Bank bank)
     {
 
