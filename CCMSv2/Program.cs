@@ -155,6 +155,7 @@ class Application : ICustomerOperations
             ConsoleDisplay.WaitForConfirmation();
             return;
         }
+        ConsoleDisplay.WriteColorLine($"Welcome, {customer.name}", ConsoleColor.Green);
         ConsoleDisplay.WriteColorLine("Select a bank to proceed: ", ConsoleColor.Cyan);
         int bankIndex = 0;
         List<Account> accounts = customer.getAccounts();
@@ -246,7 +247,7 @@ class Application : ICustomerOperations
     {
         Console.Clear();
         Initialize();
-        ConsoleDisplay.WriteLine("Hello, Welcome to the application!");
+        ConsoleDisplay.WriteLine("Hello, Welcome to the banking application!");
         ProgramLoop();
         Console.Clear();
         ConsoleDisplay.WriteColorLine("Thanks you for availing our service! Visit us Again!", ConsoleColor.Green);
@@ -281,7 +282,7 @@ class Application : ICustomerOperations
             ConsoleDisplay.WriteColorLine("You donot have any card linked to your account!", ConsoleColor.Red);
             return null;
         }
-        ConsoleDisplay.WriteColorLine("Select a card to view balance: ", ConsoleColor.Cyan);
+        ConsoleDisplay.WriteColorLine("Select a card to proceed: ", ConsoleColor.Cyan);
         Card card;
         for (int index = 0; index < activeCards.Count; ++index)
         {

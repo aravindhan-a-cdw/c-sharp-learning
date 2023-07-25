@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 class Customer
 {
-    string name;
+    public string name { get; }
 
     uint aadharNumber;
 
