@@ -68,8 +68,6 @@ class Application : ICustomerOperations
     {
         ConsoleDisplay.WriteColorLine("Select your role: ", ConsoleColor.DarkCyan);
         Console.WriteLine("1. BankAdmin\n2. Customer");
-        // int selectedOption;
-        // Int32.TryParse(Console.ReadLine(), out selectedOption);
         return OptionSelection(max: 2);
     }
 
